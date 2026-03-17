@@ -10,7 +10,6 @@
             --envelope-color: #d44d44;
             --envelope-dark: #b13b33;
             --card-white: #ffffff;
-            --gold: #d4af37;
         }
 
         body {
@@ -26,7 +25,7 @@
 
         .container {
             position: relative;
-            top: 50px; /* Moves it down so the card has room to pop up */
+            margin-top: 150px; /* Gives room for card to pop out upwards */
         }
 
         .envelope-wrapper {
@@ -35,9 +34,10 @@
             height: 200px;
             background-color: var(--envelope-dark);
             cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
-        /* The Card - Starts Hidden */
+        /* The Card */
         .card {
             position: absolute;
             top: 5px;
@@ -45,19 +45,21 @@
             width: 280px;
             height: 180px;
             background: var(--card-white);
-            z-index: 1; /* Behind the front flaps initially */
-            padding: 20px;
+            z-index: 1; /* Initially inside */
+            padding: 25px 20px;
             box-sizing: border-box;
             text-align: center;
-            transition: transform 0.8s ease, z-index 0s 0.4s;
+            transition: transform 1s ease-in-out, z-index 0s 0.5s, height 0.6s 0.8s;
             box-shadow: 0 0 15px rgba(0,0,0,0.1);
             border: 1px solid #eee;
+            border-radius: 4px;
         }
 
-        /* Front Flaps of Envelope */
+        /* Envelope Front - Two triangles meeting */
         .envelope-wrapper::before {
             content: "";
             position: absolute;
+            bottom: 0;
             z-index: 3;
             border-top: 100px solid transparent;
             border-right: 150px solid var(--envelope-color);
@@ -76,7 +78,7 @@
             border-top: 110px solid var(--envelope-dark);
             transform-origin: top;
             z-index: 4;
-            transition: transform 0.5s ease;
+            transition: transform 0.6s ease;
         }
 
         /* OPEN STATE ANIMATIONS */
@@ -86,30 +88,33 @@
         }
 
         .envelope-wrapper.open .card {
-            transform: translateY(-180px); /* Moves up higher */
-            z-index: 5; /* Brings it to the very front */
-            height: 320px; /* Expands to show content */
+            /* 1. Card moves WAY UP to clear the envelope */
+            /* 2. Z-index changes mid-way (via the transition delay) */
+            /* 3. Card then settles slightly down and expands */
+            transform: translateY(-220px); 
+            z-index: 5;
+            height: 350px;
         }
 
-        /* Content Styling */
-        h2 { color: var(--envelope-dark); margin-top: 0; font-size: 24px; }
-        p { margin: 8px 0; font-size: 14px; color: #444; }
+        h2 { color: var(--envelope-dark); margin: 0 0 15px 0; font-size: 26px; border-bottom: 1px solid #fce4ec; padding-bottom: 10px; }
+        p { margin: 10px 0; font-size: 15px; color: #444; line-height: 1.4; }
         
         .btn-rsvp {
             display: inline-block;
-            margin-top: 15px;
-            padding: 10px 20px;
-            background-color: #25D366; /* WhatsApp Green */
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: #25D366;
             color: white;
             text-decoration: none;
-            border-radius: 25px;
+            border-radius: 30px;
             font-weight: bold;
-            font-size: 13px;
+            font-size: 14px;
             font-family: sans-serif;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         @media (max-width: 400px) {
-            .container { transform: scale(0.9); }
+            .container { transform: scale(0.85); }
         }
     </style>
 </head>
@@ -119,26 +124,25 @@
         <div class="envelope-wrapper" id="invite" onclick="this.classList.toggle('open')">
             <div class="flap"></div>
             <div class="card">
-                <h2>Dinner Invitation</h2>
-                <p>You're invited to join us for an evening of great food and company!</p>
-                <div style="border-top: 1px solid #ddd; margin: 10px 0;"></div>
-                <p><strong>SATURDAY | APRIL 12</strong></p>
-                <p>Starts at 7:30 PM</p>
+                <h2>Dinner Invite</h2>
+                <p>We'd love for you to join us for a delightful evening of food and conversation.</p>
+                <p><strong>SATURDAY, APRIL 12</strong></p>
+                <p>7:30 PM Onwards</p>
                 <p><em>The Secret Garden Bistro</em></p>
                 
-                <a href="https://wa.me/1234567890?text=I'm%20coming%20to%20dinner!" class="btn-rsvp">
-                    RSVP ON WHATSAPP
+                <a href="https://wa.me/YOURNUMBER?text=Hi!%20I'd%20love%20to%20attend%20the%20dinner." class="btn-rsvp">
+                    RSVP VIA WHATSAPP
                 </a>
             </div>
         </div>
     </div>
 
     <script>
-        // Automatic opening sequence
+        // Trigger animation after page loads
         window.onload = () => {
             setTimeout(() => {
                 document.getElementById('invite').classList.add('open');
-            }, 1200);
+            }, 1000);
         };
     </script>
 </body>
