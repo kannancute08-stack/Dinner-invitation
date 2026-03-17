@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.90">
-    <title>Royal Invitation</title>
+    <title>Dinner Invitation | Flag Staff House</title>
     <style>
         :root {
             --parchment: #f4e4bc;
@@ -18,19 +18,18 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #000; /* Dark background behind the image */
+            background-color: #000; 
             font-family: 'Georgia', serif;
             overflow: hidden;
         }
 
-        /* --- BUDDHA BACKGROUND LAYER --- */
+        /* --- BUDDHA BACKGROUND LAYER (90% Transparent) --- */
         .background-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            /* 90% transparency = 0.1 opacity */
             opacity: 0.1; 
             z-index: -1;
             background-image: url('https://raw.githubusercontent.com/kannancute08-stack/Dinner-invitation/main/bg.png');
@@ -44,10 +43,10 @@
             flex-direction: column;
             align-items: center;
             width: 90%;
-            max-width: 380px;
+            max-width: 400px;
         }
 
-        /* The Golden Rods */
+        /* Golden Rods */
         .roller {
             width: 110%;
             height: 20px;
@@ -61,7 +60,7 @@
         /* The Parchment */
         .parchment {
             width: 100%;
-            height: 0px; /* Starts closed */
+            height: 0px; 
             background-color: var(--parchment);
             background-image: url('https://www.transparenttextures.com/patterns/papyros.png');
             overflow: hidden;
@@ -70,12 +69,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
         }
 
-        /* Content inside the scroll */
+        /* Content Sections */
         .content {
-            padding: 30px;
+            padding: 25px;
             text-align: center;
             opacity: 0;
             transform: translateY(20px);
@@ -85,9 +83,8 @@
             box-sizing: border-box;
         }
 
-        /* ANIMATION TRIGGER */
         .scroll-container.open .parchment {
-            height: 480px; 
+            height: 550px; 
         }
 
         .scroll-container.open .content {
@@ -95,14 +92,37 @@
             transform: translateY(0);
         }
 
-        /* Typography */
-        h1 { 
-            font-size: 22px; 
-            margin-bottom: 15px;
-            color: #000;
+        /* Logo & Host Header */
+        .header-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            padding-bottom: 10px;
         }
-        p { font-size: 16px; line-height: 1.4; margin: 8px 0; }
-        .date { font-weight: bold; color: #8b4513; font-size: 18px; }
+
+        .logo { width: 60px; height: auto; }
+        
+        .host-name {
+            font-size: 16px;
+            font-weight: bold;
+            text-align: right;
+            font-style: italic;
+        }
+
+        /* Guest Name */
+        h1 { 
+            font-size: 20px; 
+            margin: 15px 0;
+            color: #000;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--gold);
+            display: inline-block;
+        }
+
+        p { font-size: 15px; line-height: 1.4; margin: 5px 0; }
+        .date { font-weight: bold; color: #8b4513; font-size: 17px; margin-top: 10px; }
         
         .btn-rsvp {
             display: inline-block;
@@ -114,10 +134,12 @@
             border-radius: 5px;
             font-weight: bold;
             font-size: 13px;
-            transition: background 0.3s;
+            transition: 0.3s;
         }
 
-        /* Decorative ends for the rollers */
+        .btn-rsvp:hover { background-color: #000; }
+
+        /* Roller Ends */
         .roller::before, .roller::after {
             content: "";
             position: absolute;
@@ -142,15 +164,28 @@
 
         <div class="parchment">
             <div class="content">
-                <p>Request the pleasure of the company of</p>
-                <h1 style="font-weight: bold;">MR ANIKET GOVIND MANDAVGANE</h1>
-                <p class="date">Thursday, Mar 12th</p>
-                <p>6:45 PM.</p>
-                <p><b>Dress: </b>Formals</p>
-                <div style="margin-top: 15px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 10px;">
-                    <p><em><B>RSVP: </B>ADC to Commandant</em></p>
-                    <p><em>(Regrets only)</em></p>
+                
+                <div class="header-box">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/5/53/Indian_Military_Training_Team_Bhutan_Logo.png/220px-Indian_Military_Training_Team_Bhutan_Logo.png" class="logo" alt="IMTRAT Logo">
+                    <div class="host-name">Maj Gen & Mrs Mohit Seth</div>
                 </div>
+
+                <p>Request the pleasure of the company of</p>
+                
+                <h1 id="guestName" style="font-weight: bold;">GUEST NAME</h1>
+                
+                <p>to <b>Dinner</b> at <b>Flag Staff House</b></p>
+                
+                <p class="date">Thursday, Mar 12, 2026</p>
+                <p>at <b>6:45 P.M.</b></p>
+                
+                <p style="margin-top: 15px;"><b>Dress: </b>Formals</p>
+                
+                <div style="margin-top: 15px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 10px; font-size: 13px;">
+                    <p><b>RSVP: </b>ADC to Commandant</p>
+                    <p>(Regrets only) | <b>Mob: </b>+91-8874915524</p>
+                </div>
+                
                 <a href="https://wa.me/97577423330" class="btn-rsvp">Accept Invitation</a>
             </div>
         </div>
@@ -160,6 +195,16 @@
 
     <script>
         window.onload = () => {
+            // 1. Get the name from the URL (?name=Mr. Smith)
+            const urlParams = new URLSearchParams(window.location.search);
+            const guestName = urlParams.get('name');
+
+            // 2. If a name exists, update the text on the page
+            if (guestName) {
+                document.getElementById('guestName').innerText = decodeURIComponent(guestName);
+            }
+
+            // 3. Trigger the unrolling animation
             setTimeout(() => {
                 document.getElementById('scroll').classList.add('open');
             }, 800);
