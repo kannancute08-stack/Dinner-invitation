@@ -3,54 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>You're Invited!</title>
+    <title>Dinner Invitation</title>
     <style>
         :root {
-            --primary-color: #f5f5f5;
+            --bg-color: #fce4ec;
             --envelope-color: #d44d44;
             --envelope-dark: #b13b33;
-            --card-color: #ffffff;
-            --text-color: #333;
+            --card-white: #ffffff;
+            --gold: #d4af37;
         }
 
         body {
             margin: 0;
-            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #fce4ec;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            font-family: 'Georgia', serif;
             overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            top: 50px; /* Moves it down so the card has room to pop up */
         }
 
         .envelope-wrapper {
             position: relative;
-            cursor: pointer;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        /* Envelope Body */
-        .envelope {
-            position: relative;
             width: 300px;
             height: 200px;
             background-color: var(--envelope-dark);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            cursor: pointer;
         }
 
-        .envelope::before {
+        /* The Card - Starts Hidden */
+        .card {
+            position: absolute;
+            top: 5px;
+            left: 10px;
+            width: 280px;
+            height: 180px;
+            background: var(--card-white);
+            z-index: 1; /* Behind the front flaps initially */
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            transition: transform 0.8s ease, z-index 0s 0.4s;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            border: 1px solid #eee;
+        }
+
+        /* Front Flaps of Envelope */
+        .envelope-wrapper::before {
             content: "";
             position: absolute;
-            z-index: 2;
-            border-top: 110px solid transparent;
+            z-index: 3;
+            border-top: 100px solid transparent;
             border-right: 150px solid var(--envelope-color);
             border-bottom: 100px solid var(--envelope-color);
             border-left: 150px solid var(--envelope-color);
         }
 
-        /* The Flap */
+        /* Top Flap */
         .flap {
             position: absolute;
             top: 0;
@@ -60,86 +75,70 @@
             border-right: 150px solid transparent;
             border-top: 110px solid var(--envelope-dark);
             transform-origin: top;
-            z-index: 3;
-            transition: transform 0.6s 0.4s ease;
+            z-index: 4;
+            transition: transform 0.5s ease;
         }
 
-        /* The Invite Card */
-        .card {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            width: 280px;
-            height: 180px;
-            background: var(--card-color);
-            z-index: 1;
-            padding: 20px;
-            box-sizing: border-box;
-            text-align: center;
-            transition: transform 0.8s 1s ease, height 0.8s 1s ease;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
-            border-radius: 5px;
-        }
-
-        .card h2 {
-            font-size: 22px;
-            color: var(--envelope-color);
-            margin-bottom: 10px;
-        }
-
-        .card p {
-            font-size: 14px;
-            margin: 5px 0;
-            color: var(--text-color);
-        }
-
-        /* Animation States */
+        /* OPEN STATE ANIMATIONS */
         .envelope-wrapper.open .flap {
             transform: rotateX(180deg);
             z-index: 0;
         }
 
         .envelope-wrapper.open .card {
-            transform: translateY(-120px);
-            height: 260px; /* Expands when it comes out */
+            transform: translateY(-180px); /* Moves up higher */
+            z-index: 5; /* Brings it to the very front */
+            height: 320px; /* Expands to show content */
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        /* Content Styling */
+        h2 { color: var(--envelope-dark); margin-top: 0; font-size: 24px; }
+        p { margin: 8px 0; font-size: 14px; color: #444; }
+        
+        .btn-rsvp {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #25D366; /* WhatsApp Green */
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 13px;
+            font-family: sans-serif;
         }
 
-        /* Mobile Adjustments */
         @media (max-width: 400px) {
-            .envelope { width: 260px; height: 170px; }
-            .flap { border-left-width: 130px; border-right-width: 130px; border-top-width: 95px; }
-            .card { width: 240px; height: 150px; }
-            .envelope-wrapper.open .card { transform: translateY(-130px); height: 280px; }
+            .container { transform: scale(0.9); }
         }
     </style>
 </head>
 <body>
 
-    <div class="envelope-wrapper" id="envelopeWrapper" onclick="this.classList.toggle('open')">
-        <div class="flap"></div>
-        <div class="envelope"></div>
-        <div class="card">
-            <h2>Dinner Party</h2>
-            <p>You are cordially invited to a special evening of food and laughter.</p>
-            <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
-            <p><strong>DATE:</strong> Saturday, April 12th</p>
-            <p><strong>TIME:</strong> 7:30 PM</p>
-            <p><strong>LOCATION:</strong> The Secret Garden Bistro</p>
-            <p style="margin-top: 15px; font-style: italic; font-size: 12px;">Tap to close</p>
+    <div class="container">
+        <div class="envelope-wrapper" id="invite" onclick="this.classList.toggle('open')">
+            <div class="flap"></div>
+            <div class="card">
+                <h2>Dinner Invitation</h2>
+                <p>You're invited to join us for an evening of great food and company!</p>
+                <div style="border-top: 1px solid #ddd; margin: 10px 0;"></div>
+                <p><strong>SATURDAY | APRIL 12</strong></p>
+                <p>Starts at 7:30 PM</p>
+                <p><em>The Secret Garden Bistro</em></p>
+                
+                <a href="https://wa.me/1234567890?text=I'm%20coming%20to%20dinner!" class="btn-rsvp">
+                    RSVP ON WHATSAPP
+                </a>
+            </div>
         </div>
     </div>
 
     <script>
-        // Auto-open after a short delay for that "wow" effect
+        // Automatic opening sequence
         window.onload = () => {
             setTimeout(() => {
-                document.getElementById('envelopeWrapper').classList.add('open');
-            }, 1000);
+                document.getElementById('invite').classList.add('open');
+            }, 1200);
         };
     </script>
 </body>
