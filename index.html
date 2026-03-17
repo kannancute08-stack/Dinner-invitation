@@ -65,15 +65,16 @@ body::before {
     width: 92%;
     min-height: 230px;
     background: linear-gradient(145deg, #fffdf6, #f2f2f2);
-    top: 10px;
+    top: 0;
     left: 4%;
     border-radius: 14px;
     padding: 18px;
     box-sizing: border-box;
     text-align: center;
-    z-index: 0;
+    z-index: 2;
 
-    transform: translateY(80px);
+    transform: translateY(60px);
+    transform-origin: bottom;
     box-shadow: 0 5px 15px rgba(0,0,0,0.4);
     transition: transform 2s cubic-bezier(.68,-0.6,.32,1.6) 0.3s,
                 box-shadow 2s ease;
