@@ -6,16 +6,17 @@
 <title>Dinner Invitation</title>
 
 <style>
+/* BODY + BACKGROUND */
 body {
     margin: 0;
-    background: radial-gradient(circle, #0d0d0d, #000);
+    padding-bottom: 120px; /* space for card to rise */
     display: flex;
     justify-content: center;
     align-items: flex-end;
     height: 100dvh;
-    padding-bottom: 120px;
-    overflow: hidden;
+    background: radial-gradient(circle, #0d0d0d, #000);
     font-family: 'Segoe UI', sans-serif;
+    overflow: hidden;
 }
 
 /* GOLD PARTICLES */
@@ -28,21 +29,28 @@ body::before {
     background-size: 30px 30px;
     animation: moveBg 30s linear infinite;
 }
-
 @keyframes moveBg {
     from { transform: translate(0,0); }
     to { transform: translate(-200px,-200px); }
 }
 
-/* ENVELOPE */
-.envelope {
+/* WRAPPER */
+.wrapper {
     position: relative;
     width: 90vw;
     max-width: 320px;
+    height: 400px;
+}
+
+/* ENVELOPE */
+.envelope {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
     height: 160px;
-    background: #7b1e1e;
+    background: #8e2c2c;
     border-radius: 10px;
-    overflow: visible;
+    overflow: visible; /* allow card to come out */
     box-shadow: 0 10px 30px rgba(0,0,0,0.7);
 }
 
@@ -51,44 +59,41 @@ body::before {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: #b83232;
-    backface-visibility: hidden;
+    background: #c0392b;
     clip-path: polygon(0 0, 100% 0, 50% 60%);
     transform-origin: top;
     transition: transform 1s ease;
-    z-index: 3;
+    z-index: 3; /* on top initially */
 }
 
 /* CARD */
 .card {
     position: absolute;
+    bottom: 40px; /* inside envelope */
+    left: 4%;
     width: 92%;
     min-height: 230px;
     background: linear-gradient(145deg, #fffdf6, #f2f2f2);
-    top: 0;
-    left: 4%;
     border-radius: 14px;
     padding: 18px;
-    box-sizing: border-box;
     text-align: center;
-    z-index: 2;
-
-    transform: translateY(60px);
-    transform-origin: bottom;
     box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-    transition: transform 2s cubic-bezier(.68,-0.6,.32,1.6) 0.3s,
-                box-shadow 2s ease;
+    transform: translateY(0);
+    transition: transform 1.8s cubic-bezier(.68,-0.6,.32,1.6) 0.5s,
+                box-shadow 1.8s ease;
+    z-index: 1; /* start behind flap */
+    transform-origin: bottom;
 }
 
 /* OPEN STATES */
 .envelope.open .flap {
     transform: rotateX(180deg);
-    z-index: 0;
+    z-index: 0; /* send behind after opening */
 }
-
 .envelope.open .card {
     transform: translateY(-220px) scale(1.02);
-    box-shadow: 0 30px 50px rgba(0,0,0,0.9);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.9);
+    z-index: 4; /* now on top */
 }
 
 /* CONTENT */
@@ -97,7 +102,6 @@ body::before {
     transform: translateY(15px);
     transition: all 1.5s ease;
 }
-
 .envelope.open .content {
     opacity: 1;
     transform: translateY(0);
@@ -109,7 +113,6 @@ h2 {
     font-size: 20px;
     margin: 6px 0;
 }
-
 p {
     font-size: 14px;
     margin: 4px 0;
@@ -126,7 +129,6 @@ p {
     color: white;
     font-size: 14px;
 }
-
 .whatsapp { background: #25D366; }
 .map { background: #3498db; }
 
@@ -137,36 +139,32 @@ p {
     font-size: 12px;
     color: #aaa;
 }
-
 </style>
 </head>
 
 <body>
 
-<div class="envelope" id="env">
-    <div class="flap"></div>
+<div class="wrapper">
+    <div class="envelope" id="env">
+        <div class="flap"></div>
+    </div>
 
-    <div class="card">
+    <div class="card" id="card">
         <div class="content">
             <h2>🍽 Dinner Invitation</h2>
             <p><b id="guestName">Dear Guest</b></p>
-
             <p>You are warmly invited</p>
-
             <p><b>Date:</b> 25 March 2026</p>
             <p><b>Time:</b> 7:30 PM</p>
             <p><b>Venue:</b> Your Home</p>
 
-            <p>Join us for a special evening ✨</p>
-
             <a class="btn whatsapp"
-            href="https://wa.me/919999999999?text=I%20will%20attend">
-            RSVP on WhatsApp
+               href="https://wa.me/919999999999?text=I%20will%20attend">
+               RSVP on WhatsApp
             </a>
-
             <a class="btn map"
-            href="https://maps.google.com">
-            View Location
+               href="https://maps.google.com">
+               View Location
             </a>
         </div>
     </div>
@@ -174,7 +172,6 @@ p {
 
 <div class="tap-msg">Tap anywhere for sound 🔊</div>
 
-<!-- SOUND -->
 <audio id="sound">
     <source src="https://www.soundjay.com/paper/sounds/paper-open-01.mp3" type="audio/mp3">
 </audio>
@@ -187,16 +184,15 @@ if(name){
     document.getElementById("guestName").innerText = "Dear " + name;
 }
 
-// STEP 1: open flap
+// Step 1: open flap & animate card
 setTimeout(() => {
     document.getElementById('env').classList.add('open');
 }, 800);
 
-// SOUND on tap (mobile restriction)
+// Tap for sound
 document.body.addEventListener('click', () => {
     document.getElementById('sound').play();
 }, { once: true });
-
 </script>
 
 </body>
