@@ -1,199 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dinner Invitation</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You're Invited!</title>
+    <style>
+        :root {
+            --primary-color: #f5f5f5;
+            --envelope-color: #d44d44;
+            --envelope-dark: #b13b33;
+            --card-color: #ffffff;
+            --text-color: #333;
+        }
 
-<style>
-/* BODY + BACKGROUND */
-body {
-    margin: 0;
-    padding-bottom: 120px; /* space for card to rise */
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    height: 100dvh;
-    background: radial-gradient(circle, #0d0d0d, #000);
-    font-family: 'Segoe UI', sans-serif;
-    overflow: hidden;
-}
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #fce4ec;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
 
-/* GOLD PARTICLES */
-body::before {
-    content: "";
-    position: absolute;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,215,0,0.12) 1px, transparent 1px);
-    background-size: 30px 30px;
-    animation: moveBg 30s linear infinite;
-}
-@keyframes moveBg {
-    from { transform: translate(0,0); }
-    to { transform: translate(-200px,-200px); }
-}
+        .envelope-wrapper {
+            position: relative;
+            cursor: pointer;
+            animation: float 3s ease-in-out infinite;
+        }
 
-/* WRAPPER */
-.wrapper {
-    position: relative;
-    width: 90vw;
-    max-width: 320px;
-    height: 400px;
-}
+        /* Envelope Body */
+        .envelope {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            background-color: var(--envelope-dark);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
 
-/* ENVELOPE */
-.envelope {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 160px;
-    background: #8e2c2c;
-    border-radius: 10px;
-    overflow: visible; /* allow card to come out */
-    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-}
+        .envelope::before {
+            content: "";
+            position: absolute;
+            z-index: 2;
+            border-top: 110px solid transparent;
+            border-right: 150px solid var(--envelope-color);
+            border-bottom: 100px solid var(--envelope-color);
+            border-left: 150px solid var(--envelope-color);
+        }
 
-/* FLAP */
-.flap {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: #c0392b;
-    clip-path: polygon(0 0, 100% 0, 50% 60%);
-    transform-origin: top;
-    transition: transform 1s ease;
-    z-index: 3; /* on top initially */
-}
+        /* The Flap */
+        .flap {
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 110px solid var(--envelope-dark);
+            transform-origin: top;
+            z-index: 3;
+            transition: transform 0.6s 0.4s ease;
+        }
 
-/* CARD */
-.card {
-    position: absolute;
-    bottom: 40px; /* inside envelope */
-    left: 4%;
-    width: 92%;
-    min-height: 230px;
-    background: linear-gradient(145deg, #fffdf6, #f2f2f2);
-    border-radius: 14px;
-    padding: 18px;
-    text-align: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-    transform: translateY(0);
-    transition: transform 1.8s cubic-bezier(.68,-0.6,.32,1.6) 0.5s,
-                box-shadow 1.8s ease;
-    z-index: 1; /* start behind flap */
-    transform-origin: bottom;
-}
+        /* The Invite Card */
+        .card {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            width: 280px;
+            height: 180px;
+            background: var(--card-color);
+            z-index: 1;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            transition: transform 0.8s 1s ease, height 0.8s 1s ease;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
 
-/* OPEN STATES */
-.envelope.open .flap {
-    transform: rotateX(180deg);
-    z-index: 0; /* send behind after opening */
-}
-.envelope.open .card {
-    transform: translateY(-220px) scale(1.02);
-    box-shadow: 0 30px 60px rgba(0,0,0,0.9);
-    z-index: 4; /* now on top */
-}
+        .card h2 {
+            font-size: 22px;
+            color: var(--envelope-color);
+            margin-bottom: 10px;
+        }
 
-/* CONTENT */
-.content {
-    opacity: 0;
-    transform: translateY(15px);
-    transition: all 1.5s ease;
-}
-.envelope.open .content {
-    opacity: 1;
-    transform: translateY(0);
-    transition-delay: 1.5s;
-}
+        .card p {
+            font-size: 14px;
+            margin: 5px 0;
+            color: var(--text-color);
+        }
 
-/* TEXT */
-h2 {
-    font-size: 20px;
-    margin: 6px 0;
-}
-p {
-    font-size: 14px;
-    margin: 4px 0;
-}
+        /* Animation States */
+        .envelope-wrapper.open .flap {
+            transform: rotateX(180deg);
+            z-index: 0;
+        }
 
-/* BUTTONS */
-.btn {
-    display: block;
-    margin: 8px auto;
-    padding: 10px;
-    width: 90%;
-    border-radius: 25px;
-    text-decoration: none;
-    color: white;
-    font-size: 14px;
-}
-.whatsapp { background: #25D366; }
-.map { background: #3498db; }
+        .envelope-wrapper.open .card {
+            transform: translateY(-120px);
+            height: 260px; /* Expands when it comes out */
+        }
 
-/* TAP MESSAGE */
-.tap-msg {
-    position: absolute;
-    bottom: 10px;
-    font-size: 12px;
-    color: #aaa;
-}
-</style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 400px) {
+            .envelope { width: 260px; height: 170px; }
+            .flap { border-left-width: 130px; border-right-width: 130px; border-top-width: 95px; }
+            .card { width: 240px; height: 150px; }
+            .envelope-wrapper.open .card { transform: translateY(-130px); height: 280px; }
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="wrapper">
-    <div class="envelope" id="env">
+    <div class="envelope-wrapper" id="envelopeWrapper" onclick="this.classList.toggle('open')">
         <div class="flap"></div>
-    </div>
-
-    <div class="card" id="card">
-        <div class="content">
-            <h2>🍽 Dinner Invitation</h2>
-            <p><b id="guestName">Dear Guest</b></p>
-            <p>You are warmly invited</p>
-            <p><b>Date:</b> 25 March 2026</p>
-            <p><b>Time:</b> 7:30 PM</p>
-            <p><b>Venue:</b> Your Home</p>
-
-            <a class="btn whatsapp"
-               href="https://wa.me/919999999999?text=I%20will%20attend">
-               RSVP on WhatsApp
-            </a>
-            <a class="btn map"
-               href="https://maps.google.com">
-               View Location
-            </a>
+        <div class="envelope"></div>
+        <div class="card">
+            <h2>Dinner Party</h2>
+            <p>You are cordially invited to a special evening of food and laughter.</p>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+            <p><strong>DATE:</strong> Saturday, April 12th</p>
+            <p><strong>TIME:</strong> 7:30 PM</p>
+            <p><strong>LOCATION:</strong> The Secret Garden Bistro</p>
+            <p style="margin-top: 15px; font-style: italic; font-size: 12px;">Tap to close</p>
         </div>
     </div>
-</div>
 
-<div class="tap-msg">Tap anywhere for sound 🔊</div>
-
-<audio id="sound">
-    <source src="https://www.soundjay.com/paper/sounds/paper-open-01.mp3" type="audio/mp3">
-</audio>
-
-<script>
-// Dynamic Name from URL
-const params = new URLSearchParams(window.location.search);
-const name = params.get("name");
-if(name){
-    document.getElementById("guestName").innerText = "Dear " + name;
-}
-
-// Step 1: open flap & animate card
-setTimeout(() => {
-    document.getElementById('env').classList.add('open');
-}, 800);
-
-// Tap for sound
-document.body.addEventListener('click', () => {
-    document.getElementById('sound').play();
-}, { once: true });
-</script>
-
+    <script>
+        // Auto-open after a short delay for that "wow" effect
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('envelopeWrapper').classList.add('open');
+            }, 1000);
+        };
+    </script>
 </body>
 </html>
