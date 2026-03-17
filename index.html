@@ -23,45 +23,41 @@
             overflow: hidden;
         }
 
-        /* The main container */
         .container {
             position: relative;
-            /* Delay the downward move until the flap is open */
-            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1) 1.5s;
+            /* Delay the sink until after flap opens */
+            transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1) 2s;
+            width: 300px;
+            height: 200px;
         }
 
         .container.open {
-            transform: translateY(150px); /* Envelope sinks to bottom */
+            transform: translateY(180px); /* Envelope sinks down */
         }
 
+        /* The Envelope Base */
         .envelope-wrapper {
-            position: relative;
+            position: absolute;
             width: 300px;
             height: 200px;
             background-color: var(--envelope-dark);
-            cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            z-index: 1;
         }
 
-        /* The Front Pocket */
+        /* The Front "Pocket" - This hides the card at the start */
         .envelope-front {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 3;
-        }
-
-        .envelope-front::before {
-            content: "";
-            position: absolute;
-            bottom: 0;
+            width: 0;
+            height: 0;
             border-top: 100px solid transparent;
             border-right: 150px solid var(--envelope-color);
             border-bottom: 100px solid var(--envelope-color);
             border-left: 150px solid var(--envelope-color);
+            z-index: 4; /* Keeps card behind it initially */
+            bottom: 0;
         }
 
-        /* The Flap - Opens after 2 seconds */
+        /* The Flap */
         .flap {
             position: absolute;
             top: 0;
@@ -71,82 +67,74 @@
             border-right: 150px solid transparent;
             border-top: 110px solid var(--envelope-dark);
             transform-origin: top;
-            z-index: 4;
-            /* Transition starts after initial delay */
-            transition: transform 0.6s ease-in-out 0.8s;
+            z-index: 5;
+            transition: transform 0.8s ease-in-out 1s; /* Opens after 1s */
         }
 
         .container.open .flap {
             transform: rotateX(180deg);
-            z-index: 0;
+            z-index: 0; /* Flap goes behind card when open */
         }
 
-        /* The Card - Comes out slowly after flap opens */
+        /* The Card */
         .card {
             position: absolute;
-            top: 5px;
+            top: 10px;
             left: 10px;
             width: 280px;
             height: 180px;
             background: var(--card-white);
-            z-index: 1; 
+            z-index: 2; /* Sits between back and front pocket */
             padding: 25px 20px;
             box-sizing: border-box;
             text-align: center;
-            /* Delay: 1.5s total to wait for flap and then move slowly */
-            transition: transform 1.5s ease-out 1.5s, height 1.2s ease-out 1.5s, z-index 0s 1.8s;
-            box-shadow: 0 0 15px rgba(0,0,0,0.05);
-            visibility: hidden;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            /* Move up slowly after flap opens */
+            transition: transform 1.5s ease-in-out 2s, height 1.5s ease-in-out 2s, z-index 0s 2.5s;
         }
 
         .container.open .card {
-            visibility: visible;
-            transform: translateY(-320px); /* Rises high above the sinking envelope */
-            z-index: 5;
-            height: 380px;
+            transform: translateY(-350px); /* Rises up */
+            height: 400px; /* Unfolds */
+            z-index: 6; /* Pops to the very front at the end */
         }
 
         /* Content Styling */
-        h2 { color: var(--envelope-dark); margin: 0 0 15px 0; font-size: 24px; text-transform: uppercase; }
-        p { margin: 8px 0; font-size: 15px; color: #444; line-height: 1.4; }
-        
+        h2 { color: var(--envelope-dark); margin: 0 0 10px 0; font-size: 22px; }
+        p { margin: 5px 0; font-size: 15px; color: #444; line-height: 1.4; }
         .btn-rsvp {
             display: inline-block;
             margin-top: 20px;
-            padding: 12px 28px;
+            padding: 12px 25px;
             background-color: #25D366;
             color: white;
             text-decoration: none;
             border-radius: 30px;
             font-weight: bold;
             font-size: 13px;
-            font-family: sans-serif;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         @media (max-width: 400px) {
             .container { transform: scale(0.8); }
-            .container.open { transform: scale(0.8) translateY(180px); }
+            .container.open { transform: scale(0.8) translateY(200px); }
         }
     </style>
 </head>
 <body>
 
-    <div class="container" id="mainContainer">
+    <div class="container" id="main">
         <div class="envelope-wrapper">
             <div class="flap"></div>
             
             <div class="card">
                 <h2>Dinner Party</h2>
                 <p>You're invited to join us for an evening of great food and company!</p>
-                <div style="border-top: 2px solid #fce4ec; margin: 15px 0;"></div>
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
                 <p><strong>SATURDAY | APRIL 12</strong></p>
                 <p>7:30 PM Onwards</p>
                 <p><em>The Secret Garden Bistro</em></p>
                 
-                <a href="https://wa.me/1234567890?text=I'll%20be%20there!" class="btn-rsvp">
-                    RSVP VIA WHATSAPP
-                </a>
+                <a href="https://wa.me/1234567890" class="btn-rsvp">RSVP VIA WHATSAPP</a>
             </div>
 
             <div class="envelope-front"></div>
@@ -155,11 +143,10 @@
 
     <script>
         window.onload = () => {
-            // Step 1: Just show the closed envelope first
-            // Step 2: Trigger the opening sequence after 2 seconds
+            // Wait 2 seconds, then start the whole sequence
             setTimeout(() => {
-                document.getElementById('mainContainer').classList.add('open');
-            }, 2000);
+                document.getElementById('main').classList.add('open');
+            }, 500);
         };
     </script>
 </body>
