@@ -23,18 +23,27 @@
             overflow: hidden;
         }
 
-        /* This container prevents the card from peeking out the bottom */
+        /* The main container */
+        .container {
+            position: relative;
+            /* Delay the downward move until the flap is open */
+            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1) 1.5s;
+        }
+
+        .container.open {
+            transform: translateY(150px); /* Envelope sinks to bottom */
+        }
+
         .envelope-wrapper {
             position: relative;
             width: 300px;
             height: 200px;
             background-color: var(--envelope-dark);
             cursor: pointer;
-            /* CRITICAL FIX: hidden overflow hides the bottom of the card */
-            overflow: visible; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
-        /* The Front of the Envelope (Triangles) */
+        /* The Front Pocket */
         .envelope-front {
             position: absolute;
             width: 100%;
@@ -52,7 +61,7 @@
             border-left: 150px solid var(--envelope-color);
         }
 
-        /* The Top Flap */
+        /* The Flap - Opens after 2 seconds */
         .flap {
             position: absolute;
             top: 0;
@@ -63,88 +72,94 @@
             border-top: 110px solid var(--envelope-dark);
             transform-origin: top;
             z-index: 4;
-            transition: transform 0.5s ease;
+            /* Transition starts after initial delay */
+            transition: transform 0.6s ease-in-out 0.8s;
         }
 
-        /* The Card - Hidden inside initially */
-        .card {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            width: 280px;
-            height: 180px; /* Shortened initial height */
-            background: var(--card-white);
-            z-index: 1; 
-            padding: 20px;
-            box-sizing: border-box;
-            text-align: center;
-            transition: transform 0.8s ease, height 0.8s ease, z-index 0s 0.4s;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            visibility: hidden; /* Added to ensure it's invisible until the move starts */
-        }
-
-        /* OPEN STATE */
-        .open .flap {
+        .container.open .flap {
             transform: rotateX(180deg);
             z-index: 0;
         }
 
-        .open .card {
+        /* The Card - Comes out slowly after flap opens */
+        .card {
+            position: absolute;
+            top: 5px;
+            left: 10px;
+            width: 280px;
+            height: 180px;
+            background: var(--card-white);
+            z-index: 1; 
+            padding: 25px 20px;
+            box-sizing: border-box;
+            text-align: center;
+            /* Delay: 1.5s total to wait for flap and then move slowly */
+            transition: transform 1.5s ease-out 1.5s, height 1.2s ease-out 1.5s, z-index 0s 1.8s;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+            visibility: hidden;
+        }
+
+        .container.open .card {
             visibility: visible;
-            transform: translateY(-190px);
+            transform: translateY(-320px); /* Rises high above the sinking envelope */
             z-index: 5;
-            height: 330px; /* Expands to full size */
+            height: 380px;
         }
 
         /* Content Styling */
-        h2 { color: var(--envelope-dark); margin: 0 0 10px 0; font-size: 22px; }
-        p { margin: 5px 0; font-size: 14px; color: #444; line-height: 1.4; }
+        h2 { color: var(--envelope-dark); margin: 0 0 15px 0; font-size: 24px; text-transform: uppercase; }
+        p { margin: 8px 0; font-size: 15px; color: #444; line-height: 1.4; }
         
         .btn-rsvp {
             display: inline-block;
-            margin-top: 15px;
-            padding: 12px 24px;
+            margin-top: 20px;
+            padding: 12px 28px;
             background-color: #25D366;
             color: white;
             text-decoration: none;
             border-radius: 30px;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 13px;
             font-family: sans-serif;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         @media (max-width: 400px) {
-            .envelope-wrapper { transform: scale(0.9); top: 50px; }
+            .container { transform: scale(0.8); }
+            .container.open { transform: scale(0.8) translateY(180px); }
         }
     </style>
 </head>
 <body>
 
-    <div class="envelope-wrapper" id="invite" onclick="this.classList.toggle('open')">
-        <div class="flap"></div>
-        
-        <div class="card">
-            <h2>Dinner Party</h2>
-            <p>You're invited to join us for an evening of great food and company!</p>
-            <div style="border-top: 1px solid #eee; margin: 10px 0;"></div>
-            <p><strong>SATURDAY | APRIL 12</strong></p>
-            <p>7:30 PM Onwards</p>
-            <p><em>The Secret Garden Bistro</em></p>
+    <div class="container" id="mainContainer">
+        <div class="envelope-wrapper">
+            <div class="flap"></div>
             
-            <a href="https://wa.me/1234567890?text=I'll%20be%20there!" class="btn-rsvp">
-                RSVP VIA WHATSAPP
-            </a>
-        </div>
+            <div class="card">
+                <h2>Dinner Party</h2>
+                <p>You're invited to join us for an evening of great food and company!</p>
+                <div style="border-top: 2px solid #fce4ec; margin: 15px 0;"></div>
+                <p><strong>SATURDAY | APRIL 12</strong></p>
+                <p>7:30 PM Onwards</p>
+                <p><em>The Secret Garden Bistro</em></p>
+                
+                <a href="https://wa.me/1234567890?text=I'll%20be%20there!" class="btn-rsvp">
+                    RSVP VIA WHATSAPP
+                </a>
+            </div>
 
-        <div class="envelope-front"></div>
+            <div class="envelope-front"></div>
+        </div>
     </div>
 
     <script>
         window.onload = () => {
+            // Step 1: Just show the closed envelope first
+            // Step 2: Trigger the opening sequence after 2 seconds
             setTimeout(() => {
-                document.getElementById('invite').classList.add('open');
-            }, 1000);
+                document.getElementById('mainContainer').classList.add('open');
+            }, 2000);
         };
     </script>
 </body>
