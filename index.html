@@ -2,111 +2,116 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dinner Invitation</title>
 
 <style>
 body {
     margin: 0;
-    background: radial-gradient(circle, #1a1a1a, #000);
+    background: radial-gradient(circle, #0d0d0d, #000);
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    padding-bottom: 60px;
     height: 100dvh;
+    padding-bottom: 60px;
     overflow: hidden;
     font-family: 'Segoe UI', sans-serif;
 }
 
-/* Soft moving glow */
+/* GOLD PARTICLES */
 body::before {
     content: "";
     position: absolute;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255,215,0,0.08) 1px, transparent 1px);
-    background-size: 35px 35px;
-    animation: moveBg 25s linear infinite;
+    background: radial-gradient(circle, rgba(255,215,0,0.12) 1px, transparent 1px);
+    background-size: 30px 30px;
+    animation: moveBg 30s linear infinite;
 }
 
 @keyframes moveBg {
     from { transform: translate(0,0); }
-    to { transform: translate(-150px,-150px); }
+    to { transform: translate(-200px,-200px); }
 }
 
-/* Envelope */
+/* ENVELOPE */
 .envelope {
     position: relative;
     width: 90vw;
     max-width: 320px;
     height: 160px;
-    background: #8e2c2c;
+    background: #7b1e1e;
     border-radius: 10px;
     overflow: visible;
-    box-shadow: 0 0 25px rgba(255,215,0,0.25);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
 }
 
-/* Flap */
+/* FLAP */
 .flap {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: #c0392b;
+    background: #b83232;
     clip-path: polygon(0 0, 100% 0, 50% 60%);
     transform-origin: top;
-    transition: transform 1.4s ease;
+    transition: transform 1s ease;
+    z-index: 2;
 }
 
-/* Card */
+/* CARD */
 .card {
     position: absolute;
     width: 92%;
-    min-height: 220px;
-    background: linear-gradient(145deg, #fff, #f5f5f5);
+    min-height: 230px;
+    background: linear-gradient(145deg, #fffdf6, #f2f2f2);
     top: 10px;
     left: 4%;
     border-radius: 14px;
     padding: 18px;
     box-sizing: border-box;
-    transform: translateY(60px);
-    transition: transform 1.6s ease;
     text-align: center;
+
+    transform: translateY(80px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+    transition: transform 2s cubic-bezier(.68,-0.6,.32,1.6),
+                box-shadow 2s ease;
 }
 
-/* Open animation */
+/* OPEN STATES */
 .envelope.open .flap {
     transform: rotateX(180deg);
 }
 
 .envelope.open .card {
-    transform: translateY(-140px);
+    transform: translateY(-170px);
+    box-shadow: 0 30px 50px rgba(0,0,0,0.9);
 }
 
-/* Fade content */
+/* CONTENT */
 .content {
     opacity: 0;
-    transition: opacity 1.2s ease;
+    transform: translateY(15px);
+    transition: all 1.5s ease;
 }
 
 .envelope.open .content {
     opacity: 1;
-    transition-delay: 1.3s;
+    transform: translateY(0);
+    transition-delay: 1.5s;
 }
 
-/* Typography (mobile optimized) */
+/* TEXT */
 h2 {
-    margin: 6px 0;
     font-size: 20px;
-    color: #222;
+    margin: 6px 0;
 }
 
 p {
-    margin: 4px 0;
     font-size: 14px;
-    color: #444;
+    margin: 4px 0;
 }
 
-/* Buttons */
+/* BUTTONS */
 .btn {
     display: block;
     margin: 8px auto;
@@ -114,16 +119,19 @@ p {
     width: 90%;
     border-radius: 25px;
     text-decoration: none;
-    font-size: 14px;
     color: white;
+    font-size: 14px;
 }
 
-.whatsapp {
-    background: #25D366;
-}
+.whatsapp { background: #25D366; }
+.map { background: #3498db; }
 
-.map {
-    background: #3498db;
+/* TAP MESSAGE */
+.tap-msg {
+    position: absolute;
+    bottom: 10px;
+    font-size: 12px;
+    color: #aaa;
 }
 
 </style>
@@ -137,7 +145,7 @@ p {
     <div class="card">
         <div class="content">
             <h2>🍽 Dinner Invitation</h2>
-            <p><b>Dear Kannan</b></p>
+            <p><b id="guestName">Dear Guest</b></p>
 
             <p>You are warmly invited</p>
 
@@ -160,20 +168,29 @@ p {
     </div>
 </div>
 
-<!-- Music -->
-<audio id="music">
-    <source src="https://www.w3schools.com/html/horse.mp3" type="audio/mp3">
+<div class="tap-msg">Tap anywhere for sound 🔊</div>
+
+<!-- SOUND -->
+<audio id="sound">
+    <source src="https://www.soundjay.com/paper/sounds/paper-open-01.mp3" type="audio/mp3">
 </audio>
 
 <script>
-// Auto open
+// Dynamic Name from URL
+const params = new URLSearchParams(window.location.search);
+const name = params.get("name");
+if(name){
+    document.getElementById("guestName").innerText = "Dear " + name;
+}
+
+// STEP 1: open flap
 setTimeout(() => {
     document.getElementById('env').classList.add('open');
-}, 1200);
+}, 800);
 
-// Enable music after first tap (mobile restriction)
+// SOUND on tap (mobile restriction)
 document.body.addEventListener('click', () => {
-    document.getElementById('music').play();
+    document.getElementById('sound').play();
 }, { once: true });
 
 </script>
