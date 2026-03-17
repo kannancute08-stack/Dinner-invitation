@@ -55,7 +55,7 @@ body::before {
     clip-path: polygon(0 0, 100% 0, 50% 60%);
     transform-origin: top;
     transition: transform 1s ease;
-    z-index: 2;
+    z-index: 3;
 }
 
 /* CARD */
@@ -70,16 +70,18 @@ body::before {
     padding: 18px;
     box-sizing: border-box;
     text-align: center;
+    z-index: 0;
 
     transform: translateY(80px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-    transition: transform 2s cubic-bezier(.68,-0.6,.32,1.6),
+    transition: transform 2s cubic-bezier(.68,-0.6,.32,1.6) 0.3s,
                 box-shadow 2s ease;
 }
 
 /* OPEN STATES */
 .envelope.open .flap {
     transform: rotateX(180deg);
+    z-index: 0;
 }
 
 .envelope.open .card {
