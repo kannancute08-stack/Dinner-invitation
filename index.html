@@ -23,51 +23,36 @@
             overflow: hidden;
         }
 
-        .container {
-            position: relative;
-            margin-top: 150px; /* Gives room for card to pop out upwards */
-        }
-
+        /* This container prevents the card from peeking out the bottom */
         .envelope-wrapper {
             position: relative;
             width: 300px;
             height: 200px;
             background-color: var(--envelope-dark);
             cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            /* CRITICAL FIX: hidden overflow hides the bottom of the card */
+            overflow: visible; 
         }
 
-        /* The Card */
-        .card {
+        /* The Front of the Envelope (Triangles) */
+        .envelope-front {
             position: absolute;
-            top: 5px;
-            left: 10px;
-            width: 280px;
-            height: 180px;
-            background: var(--card-white);
-            z-index: 1; /* Initially inside */
-            padding: 25px 20px;
-            box-sizing: border-box;
-            text-align: center;
-            transition: transform 1s ease-in-out, z-index 0s 0.5s, height 0.6s 0.8s;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            border: 1px solid #eee;
-            border-radius: 4px;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
         }
 
-        /* Envelope Front - Two triangles meeting */
-        .envelope-wrapper::before {
+        .envelope-front::before {
             content: "";
             position: absolute;
             bottom: 0;
-            z-index: 3;
             border-top: 100px solid transparent;
             border-right: 150px solid var(--envelope-color);
             border-bottom: 100px solid var(--envelope-color);
             border-left: 150px solid var(--envelope-color);
         }
 
-        /* Top Flap */
+        /* The Top Flap */
         .flap {
             position: absolute;
             top: 0;
@@ -78,67 +63,84 @@
             border-top: 110px solid var(--envelope-dark);
             transform-origin: top;
             z-index: 4;
-            transition: transform 0.6s ease;
+            transition: transform 0.5s ease;
         }
 
-        /* OPEN STATE ANIMATIONS */
-        .envelope-wrapper.open .flap {
+        /* The Card - Hidden inside initially */
+        .card {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 280px;
+            height: 180px; /* Shortened initial height */
+            background: var(--card-white);
+            z-index: 1; 
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            transition: transform 0.8s ease, height 0.8s ease, z-index 0s 0.4s;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            visibility: hidden; /* Added to ensure it's invisible until the move starts */
+        }
+
+        /* OPEN STATE */
+        .open .flap {
             transform: rotateX(180deg);
             z-index: 0;
         }
 
-        .envelope-wrapper.open .card {
-            /* 1. Card moves WAY UP to clear the envelope */
-            /* 2. Z-index changes mid-way (via the transition delay) */
-            /* 3. Card then settles slightly down and expands */
-            transform: translateY(-220px); 
+        .open .card {
+            visibility: visible;
+            transform: translateY(-190px);
             z-index: 5;
-            height: 350px;
+            height: 330px; /* Expands to full size */
         }
 
-        h2 { color: var(--envelope-dark); margin: 0 0 15px 0; font-size: 26px; border-bottom: 1px solid #fce4ec; padding-bottom: 10px; }
-        p { margin: 10px 0; font-size: 15px; color: #444; line-height: 1.4; }
+        /* Content Styling */
+        h2 { color: var(--envelope-dark); margin: 0 0 10px 0; font-size: 22px; }
+        p { margin: 5px 0; font-size: 14px; color: #444; line-height: 1.4; }
         
         .btn-rsvp {
             display: inline-block;
-            margin-top: 20px;
+            margin-top: 15px;
             padding: 12px 24px;
             background-color: #25D366;
             color: white;
             text-decoration: none;
             border-radius: 30px;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 12px;
             font-family: sans-serif;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         @media (max-width: 400px) {
-            .container { transform: scale(0.85); }
+            .envelope-wrapper { transform: scale(0.9); top: 50px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="envelope-wrapper" id="invite" onclick="this.classList.toggle('open')">
-            <div class="flap"></div>
-            <div class="card">
-                <h2>Dinner Invite</h2>
-                <p>We'd love for you to join us for a delightful evening of food and conversation.</p>
-                <p><strong>SATURDAY, APRIL 12</strong></p>
-                <p>7:30 PM Onwards</p>
-                <p><em>The Secret Garden Bistro</em></p>
-                
-                <a href="https://wa.me/YOURNUMBER?text=Hi!%20I'd%20love%20to%20attend%20the%20dinner." class="btn-rsvp">
-                    RSVP VIA WHATSAPP
-                </a>
-            </div>
+    <div class="envelope-wrapper" id="invite" onclick="this.classList.toggle('open')">
+        <div class="flap"></div>
+        
+        <div class="card">
+            <h2>Dinner Party</h2>
+            <p>You're invited to join us for an evening of great food and company!</p>
+            <div style="border-top: 1px solid #eee; margin: 10px 0;"></div>
+            <p><strong>SATURDAY | APRIL 12</strong></p>
+            <p>7:30 PM Onwards</p>
+            <p><em>The Secret Garden Bistro</em></p>
+            
+            <a href="https://wa.me/1234567890?text=I'll%20be%20there!" class="btn-rsvp">
+                RSVP VIA WHATSAPP
+            </a>
         </div>
+
+        <div class="envelope-front"></div>
     </div>
 
     <script>
-        // Trigger animation after page loads
         window.onload = () => {
             setTimeout(() => {
                 document.getElementById('invite').classList.add('open');
