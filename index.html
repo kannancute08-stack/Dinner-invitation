@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dinner Invitation</title>
+    <title>Royal Invitation</title>
     <style>
         :root {
-            --bg-color: #fce4ec;
-            --envelope-color: #d44d44;
-            --envelope-dark: #b13b33;
-            --card-white: #ffffff;
+            --parchment: #f4e4bc;
+            --gold: #d4af37;
+            --gold-dark: #a68a2d;
+            --text-color: #4a3728;
         }
 
         body {
@@ -18,135 +18,138 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: var(--bg-color);
+            background-color: #2c2c2c; /* Dark background makes gold pop */
             font-family: 'Georgia', serif;
             overflow: hidden;
         }
 
-        .container {
+        .scroll-container {
             position: relative;
-            /* Delay the sink until after flap opens */
-            transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1) 2s;
-            width: 300px;
-            height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 90%;
+            max-width: 350px;
         }
 
-        .container.open {
-            transform: translateY(180px); /* Envelope sinks down */
+        /* The Golden Rods */
+        .roller {
+            width: 110%;
+            height: 20px;
+            background: linear-gradient(to bottom, var(--gold-dark), var(--gold), var(--gold-dark));
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            z-index: 10;
+            position: relative;
         }
 
-        /* The Envelope Base */
-        .envelope-wrapper {
-            position: absolute;
-            width: 300px;
-            height: 200px;
-            background-color: var(--envelope-dark);
-            z-index: 1;
+        /* The Parchment */
+        .parchment {
+            width: 100%;
+            height: 0px; /* Starts closed */
+            background-color: var(--parchment);
+            background-image: url('https://www.transparenttextures.com/patterns/papyros.png'); /* Subtle paper texture */
+            overflow: hidden;
+            transition: height 2s ease-in-out 1s; /* Unrolls after 1s */
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.2), 0 10px 20px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* The Front "Pocket" - This hides the card at the start */
-        .envelope-front {
-            position: absolute;
-            width: 0;
-            height: 0;
-            border-top: 100px solid transparent;
-            border-right: 150px solid var(--envelope-color);
-            border-bottom: 100px solid var(--envelope-color);
-            border-left: 150px solid var(--envelope-color);
-            z-index: 4; /* Keeps card behind it initially */
-            bottom: 0;
-        }
-
-        /* The Flap */
-        .flap {
-            position: absolute;
-            top: 0;
-            width: 0;
-            height: 0;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
-            border-top: 110px solid var(--envelope-dark);
-            transform-origin: top;
-            z-index: 5;
-            transition: transform 0.8s ease-in-out 1s; /* Opens after 1s */
-        }
-
-        .container.open .flap {
-            transform: rotateX(180deg);
-            z-index: 0; /* Flap goes behind card when open */
-        }
-
-        /* The Card */
-        .card {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            width: 280px;
-            height: 180px;
-            background: var(--card-white);
-            z-index: 2; /* Sits between back and front pocket */
-            padding: 25px 20px;
-            box-sizing: border-box;
+        /* Content inside the scroll */
+        .content {
+            padding: 30px;
             text-align: center;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            /* Move up slowly after flap opens */
-            transition: transform 1.5s ease-in-out 2s, height 1.5s ease-in-out 2s, z-index 0s 2.5s;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1.5s ease 2.5s, transform 1.5s ease 2.5s; /* Fades in last */
+            color: var(--text-color);
+            width: 100%;
+            box-sizing: border-box;
         }
 
-        .container.open .card {
-            transform: translateY(-350px); /* Rises up */
-            height: 400px; /* Unfolds */
-            z-index: 6; /* Pops to the very front at the end */
+        /* ANIMATION TRIGGER */
+        .scroll-container.open .parchment {
+            height: 450px; /* Height of the unrolled scroll */
         }
 
-        /* Content Styling */
-        h2 { color: var(--envelope-dark); margin: 0 0 10px 0; font-size: 22px; }
-        p { margin: 5px 0; font-size: 15px; color: #444; line-height: 1.4; }
+        .scroll-container.open .content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Typography */
+        h1 { 
+            font-size: 26px; 
+            border-bottom: 2px solid var(--gold); 
+            display: inline-block; 
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        p { font-size: 18px; line-height: 1.6; margin: 10px 0; }
+        .date { font-weight: bold; color: #8b4513; }
+        
         .btn-rsvp {
             display: inline-block;
-            margin-top: 20px;
-            padding: 12px 25px;
-            background-color: #25D366;
-            color: white;
+            margin-top: 25px;
+            padding: 12px 30px;
+            background-color: var(--text-color);
+            color: var(--parchment);
             text-decoration: none;
-            border-radius: 30px;
+            border-radius: 5px;
             font-weight: bold;
-            font-size: 13px;
+            font-size: 14px;
+            transition: background 0.3s;
         }
 
-        @media (max-width: 400px) {
-            .container { transform: scale(0.8); }
-            .container.open { transform: scale(0.8) translateY(200px); }
+        /* Decorative ends for the rollers */
+        .roller::before, .roller::after {
+            content: "";
+            position: absolute;
+            top: -5px;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, var(--gold), var(--gold-dark));
+            border-radius: 50%;
+            border: 2px solid #555;
         }
+        .roller::before { left: -15px; }
+        .roller::after { right: -15px; }
+
     </style>
 </head>
 <body>
 
-    <div class="container" id="main">
-        <div class="envelope-wrapper">
-            <div class="flap"></div>
-            
-            <div class="card">
-                <h2>Dinner Party</h2>
-                <p>You're invited to join us for an evening of great food and company!</p>
-                <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
-                <p><strong>SATURDAY | APRIL 12</strong></p>
+    <div class="scroll-container" id="scroll">
+        <div class="roller"></div>
+
+        <div class="parchment">
+            <div class="content">
+                <h1>Invitation</h1>
+                <p>By Royal Decree, you are invited to a grand</p>
+                <p style="font-size: 24px; font-weight: bold;">DINNER FEAST</p>
+                <p class="date">Saturday, April 12th</p>
                 <p>7:30 PM Onwards</p>
                 <p><em>The Secret Garden Bistro</em></p>
                 
-                <a href="https://wa.me/1234567890" class="btn-rsvp">RSVP VIA WHATSAPP</a>
+                <a href="https://wa.me/1234567890" class="btn-rsvp">Accept Invitation</a>
             </div>
-
-            <div class="envelope-front"></div>
         </div>
+
+        <div class="roller"></div>
     </div>
 
     <script>
         window.onload = () => {
-            // Wait 2 seconds, then start the whole sequence
+            // Sequence:
+            // 0s: Page loads with rods together
+            // 1s: Scroll starts to unroll
+            // 2.5s: Text fades in
             setTimeout(() => {
-                document.getElementById('main').classList.add('open');
-            }, 500);
+                document.getElementById('scroll').classList.add('open');
+            }, 1000);
         };
     </script>
 </body>
